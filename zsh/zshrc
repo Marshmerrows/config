@@ -5,13 +5,11 @@ autoload -Uz compinit && compinit
 source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
 antidote load
 
-alias bootstrap-local="source .env.bootstrap.local && poetry run python tooling/bootstrap/main.py && source .env.local && poetry run python scripts/ingest_index_org_all.py"
+alias vim='nvim'
 
-export PATH="/Applications/Postgres.app/Contents/Versions/16/bin:$PATH"
-export EDITOR=vim
+export EDITOR=nvim
 export VISUAL="$EDITOR"
 
-eval "$(mise activate zsh)"
 eval "$(direnv hook zsh)"
 
 bindkey '^[[A' history-substring-search-up
