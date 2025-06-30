@@ -1,0 +1,11 @@
+# omz stuff
+getantidote/use-omz
+ohmyzsh/ohmyzsh path:lib
+ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/kube-ps1
+
+# easier stuff
+zsh-users/zsh-history-substring-search
+
+# local stuff
+~/.zsh_plugins/kubectl-autocomplete

@@ -1,0 +1,23 @@
+export PATH="/usr/bin:$PATH"
+
+autoload -Uz compinit && compinit
+
+source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+antidote load
+
+alias bootstrap-local="source .env.bootstrap.local && poetry run python tooling/bootstrap/main.py && source .env.local && poetry run python scripts/ingest_index_org_all.py"
+
+export PATH="/Applications/Postgres.app/Contents/Versions/16/bin:$PATH"
+export EDITOR=vim
+export VISUAL="$EDITOR"
+
+eval "$(mise activate zsh)"
+eval "$(direnv hook zsh)"
+
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/jerry/.docker/completions $fpath)
+# End of Docker CLI completions
+
