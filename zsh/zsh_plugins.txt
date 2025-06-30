@@ -8,4 +8,4 @@ ohmyzsh/ohmyzsh path:plugins/kube-ps1
 zsh-users/zsh-history-substring-search
 
 # local stuff
-~/.zsh_plugins/kubectl-autocomplete
+~/configs/zsh/zsh_plugins/kubectl-autocomplete
