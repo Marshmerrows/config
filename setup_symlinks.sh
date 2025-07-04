@@ -5,6 +5,7 @@ CONFIG_DIR="$(pwd)"
 ln -sfn "${CONFIG_DIR}/hammerspoon" ~/.hammerspoon
 ln -sfn "${CONFIG_DIR}/vim/vimrc" ~/.vimrc
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
+ln -sfn "${CONFIG_DUR}/cursor/settings.json" ~/Library/Application\ Support/Cursor/User/settings.json
 
 # Create ~/.zshrc that sources the shared config
 echo "source \"${CONFIG_DIR}/zsh/zshrc\"" > ~/.zshrc
