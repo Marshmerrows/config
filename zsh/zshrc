@@ -1,4 +1,4 @@
-export PATH="/usr/bin:$PATH"
+export PATH="/opt/homebrew/bin:/usr/bin:$PATH"
 
 autoload -Uz compinit && compinit
 
