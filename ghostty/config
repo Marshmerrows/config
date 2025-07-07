@@ -1,2 +1,8 @@
 theme = Jellybeans
 font-family = VictorMono Nerd Font Mono
+
+split-divider-color = "gray"
+unfocused-split-fill = "white"
+
+keybind = global:option+space=toggle_quick_terminal
+
