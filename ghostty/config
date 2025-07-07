@@ -5,3 +5,4 @@ unfocused-split-fill = "white"
 
 keybind = global:option+space=toggle_quick_terminal
 
+keybind = shift+enter=text:\n
