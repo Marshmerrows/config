@@ -1,3 +1,7 @@
+export DISABLE_UPDATE_PROMPT=true
+export DISABLE_AUTO_UPDATE=true
+export ZSH_DISABLE_COMPFIX=true
+
 export PATH="/opt/homebrew/bin:/usr/bin:$PATH"
 
 autoload -Uz compinit && compinit
@@ -18,4 +22,3 @@ bindkey '^[[B' history-substring-search-down
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/jerry/.docker/completions $fpath)
 # End of Docker CLI completions
-
