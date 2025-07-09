@@ -85,3 +85,5 @@ vim.o.softtabstop = 2 -- Number of spaces for <Tab> in insert mode
 vim.o.shiftwidth = 2 -- Number of spaces for autoindent (e.g. when you press Enter)
 vim.o.expandtab = true -- Convert tabs to spaces
 
+vim.o.autoindent = true
+vim.o.smartindent = true
