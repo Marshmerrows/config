@@ -1,0 +1,9 @@
+" Barebones vimrc for use with things like, obsidian for example
+" ln -sfn /Users/jerry/config/vim/vimrc /example/path/.obsidian.vimrc
+
+set tabstop=2
+set softtabstop=2
+
+set clipboard=unnamed
+
+inoremap ii <Esc>
