@@ -4,8 +4,7 @@ return {
 		event = "VimEnter",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
-				-- Installation setup
+			{
 				"nvim-telescope/telescope-fzf-native.nvim",
 				build = "make",
 				cond = function()
@@ -13,20 +12,19 @@ return {
 				end,
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
-
-			-- Useful for getting pretty icons, but requires a Nerd Font.
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 		config = function()
-			-- The easiest way to use Telescope, is to start by doing something like:
-			--  :Telescope help_tags
-			-- See `:help telescope` and `:help telescope.setup()`
+			local actions = require("telescope.actions")
 			require("telescope").setup({
-				-- defaults = {
-				--   mappings = {
-				--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-				--   },
-				-- },
+				defaults = {
+					mappings = {
+						-- i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+						n = {
+							["q"] = actions.close,
+						},
+					},
+				},
 				-- pickers = {}
 				extensions = {
 					["ui-select"] = {
@@ -71,9 +69,9 @@ return {
 			end, { desc = "[S]earch [/] in Open Files" })
 
 			-- Shortcut for searching your Neovim configuration files
-			vim.keymap.set("n", "<leader>sn", function()
-				builtin.find_files({ cwd = vim.fn.stdpath("config") })
-			end, { desc = "[S]earch [N]eovim files" })
+			-- vim.keymap.set("n", "<leader>sn", function()
+			-- 	builtin.find_files({ cwd = vim.fn.stdpath("config") })
+			-- end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
 }

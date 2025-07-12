@@ -31,13 +31,18 @@ return {
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				typescriptreact = { "prettier" },
 				-- Conform can also run multiple formatters sequentially
-				python = { "ruff", "isort", "black" },
+				python = { "ruff_format", "ruff_fix", "black", "isort" },
 				--
 				-- You can use 'stop_after_first' to run the first available formatter from the list
 				javascript = { "prettierd", "prettier", stop_after_first = true },
 				typescript = { "prettierd", "prettier", stop_after_first = true },
+				json = { "prettierd", "prettier", stop_after_first = true },
+				yaml = { "prettierd", "prettier", stop_after_first = true },
+				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+
+				svelte = { "prettierd", "prettier", stop_after_first = true },
+				sql = { "pg_format" },
 			},
 		},
 	},
