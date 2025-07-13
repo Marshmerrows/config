@@ -14,8 +14,6 @@ alias vim='nvim'
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 
-eval "$(direnv hook zsh)"
-
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
@@ -23,9 +21,15 @@ bindkey '^[[B' history-substring-search-down
 fpath=(/Users/jerry/.docker/completions $fpath)
 # End of Docker CLI completions
 
-eval "$(zoxide init zsh)"
+eval "$(direnv hook zsh)"
+eval "$(zoxide init --cmd cd zsh)"
+
+source <(fzf --zsh)
 
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -l --icons --group-directories-first"
 alias la="eza -la --icons --group-directories-first"
 alias tree="eza --tree --icons"
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666"

@@ -6,9 +6,12 @@ ohmyzsh/ohmyzsh path:plugins/kube-ps1
 ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/docker
 
-# easier stuff
+# core
+zsh-users/zsh-autosuggestions
+zsh-users/zsh-completions
 zsh-users/zsh-history-substring-search
-sindresorhus/pure
+zdharma-continuum/fast-syntax-highlighting
+Aloxaf/fzf-tab
 
 # local stuff
 ~/config/zsh/zsh_plugins/kubectl-autocomplete
