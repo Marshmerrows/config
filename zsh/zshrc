@@ -24,7 +24,6 @@ fpath=(/Users/jerry/.docker/completions $fpath)
 # End of Docker CLI completions
 
 eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
 
 alias ls="eza --icons --group-directories-first"
 alias ll="eza -l --icons --group-directories-first"

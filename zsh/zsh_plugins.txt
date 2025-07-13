@@ -8,6 +8,7 @@ ohmyzsh/ohmyzsh path:plugins/docker
 
 # easier stuff
 zsh-users/zsh-history-substring-search
+sindresorhus/pure
 
 # local stuff
 ~/config/zsh/zsh_plugins/kubectl-autocomplete
