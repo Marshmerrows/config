@@ -31,6 +31,7 @@ vim.o.expandtab = true -- Convert tabs to spaces
 vim.o.autoindent = true
 vim.o.smartindent = true
 vim.o.confirm = true
+vim.opt.autoread = true -- Auto-reload files when changed outside of vim
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -43,6 +44,31 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
+-- tab buffer navigation
+vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<S-Tab>", ":bprev<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer" })
+-- Resize splits
+vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase height" })
+vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease height" })
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease width" })
+vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase width" })
+
+-- Maximize/minimize splits
+vim.keymap.set("n", "<leader>wm", "<C-w>_<C-w>|", { desc = "Maximize window" })
+vim.keymap.set("n", "<leader>we", "<C-w>=", { desc = "Equal windows" })
+
+-- Trigger autoread when files change on disk
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
+	command = "if mode() != 'c' | checktime | endif",
+	pattern = { "*" },
+})
+
+-- Notification when file is reloaded
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+	pattern = "*",
+	command = "echohl WarningMsg | echo 'File changed on disk. Buffer reloaded.' | echohl None",
+})
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
@@ -51,6 +77,23 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
 	callback = function()
 		vim.hl.on_yank()
+	end,
+})
+-- Auto-delete swap files after successful recovery
+vim.api.nvim_create_autocmd("SwapExists", {
+	callback = function()
+		-- Auto-recover and delete swap file
+		vim.v.swapchoice = "r" -- Auto-recover
+	end,
+})
+
+-- Delete swap file after successful buffer write
+vim.api.nvim_create_autocmd("BufWritePost", {
+	callback = function()
+		local swapfile = vim.fn.swapname(vim.fn.bufname())
+		if swapfile ~= "" and vim.fn.filereadable(swapfile) == 1 then
+			vim.fn.delete(swapfile)
+		end
 	end,
 })
 

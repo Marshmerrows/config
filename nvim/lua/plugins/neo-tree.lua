@@ -1,0 +1,144 @@
+return {
+	"nvim-neo-tree/neo-tree.nvim",
+	branch = "v3.x",
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"nvim-tree/nvim-web-devicons",
+		"MunifTanjim/nui.nvim",
+	},
+	-- Load when netrw would open (for directory opening)
+	event = "VimEnter",
+	init = function()
+		-- Disable netrw (important for hijacking to work)
+		vim.g.loaded_netrw = 1
+		vim.g.loaded_netrwPlugin = 1
+	end,
+	config = function()
+		require("neo-tree").setup({
+			close_if_last_window = false,
+			popup_border_style = "rounded",
+			enable_git_status = true,
+			enable_diagnostics = true,
+			open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
+
+			default_component_configs = {
+				indent = {
+					indent_size = 2,
+					padding = 1,
+					with_markers = true,
+					indent_marker = "│",
+					last_indent_marker = "└",
+					with_expanders = true,
+					expander_collapsed = "",
+					expander_expanded = "",
+				},
+				name = {
+					trailing_slash = false,
+					use_git_status_colors = true,
+				},
+				git_status = {
+					symbols = {
+						added = "",
+						modified = "",
+						deleted = "",
+						renamed = "",
+						untracked = "",
+						ignored = "",
+						unstaged = "",
+						staged = "",
+						conflict = "",
+					},
+				},
+			},
+
+			window = {
+				position = "left",
+				width = 40,
+				mappings = {
+					-- Navigation
+					["<cr>"] = "open",
+					["<2-LeftMouse>"] = "open",
+					["<esc>"] = "cancel",
+					["<space>"] = "toggle_node",
+					["l"] = "open",
+					["h"] = "close_node",
+
+					-- Window management (telescope-style)
+					["x"] = "open_split", -- horizontal split (like Ctrl+x in telescope)
+					["v"] = "open_vsplit", -- vertical split (like Ctrl+v in telescope)
+					["t"] = "open_tabnew",
+					["w"] = "open_with_window_picker",
+
+					-- File operations
+					["a"] = "add",
+					["A"] = "add_directory",
+					["d"] = "delete",
+					["r"] = "rename",
+					["c"] = "copy",
+					["m"] = "move",
+					["y"] = "copy_to_clipboard",
+					["p"] = "paste_from_clipboard",
+					-- View options
+					["H"] = "toggle_hidden",
+					["R"] = "refresh",
+					["q"] = "close_window",
+					["?"] = "show_help",
+				},
+			},
+
+			filesystem = {
+				filtered_items = {
+					visible = false,
+					hide_dotfiles = true,
+					hide_gitignored = true,
+					hide_by_name = {
+						"node_modules",
+						".git",
+						".DS_Store",
+					},
+					never_show = {
+						".DS_Store",
+						"thumbs.db",
+					},
+				},
+				follow_current_file = {
+					enabled = true,
+					leave_dirs_open = false,
+				},
+				-- This is the key setting for hijacking netrw
+				hijack_netrw_behavior = "open_default",
+				use_libuv_file_watcher = false,
+				window = {
+					mappings = {
+						["<bs>"] = "navigate_up",
+						["."] = "set_root",
+						["/"] = "fuzzy_finder",
+						["f"] = "filter_on_submit",
+						["<c-x>"] = "clear_filter",
+					},
+				},
+			},
+		})
+
+		-- Auto-open Neo-tree when starting nvim without a file
+		vim.api.nvim_create_autocmd("VimEnter", {
+			group = vim.api.nvim_create_augroup("neotree_auto_open", { clear = true }),
+			callback = function()
+				local stats = vim.loop.fs_stat(vim.fn.argv(0))
+				-- Open neo-tree if no files given OR if given a directory
+				if vim.fn.argc() == 0 or (stats and stats.type == "directory") then
+					vim.schedule(function()
+						if stats and stats.type == "directory" then
+							vim.cmd("cd " .. vim.fn.argv(0))
+						end
+						vim.cmd("Neotree show")
+					end)
+				end
+			end,
+		})
+	end,
+	keys = {
+		{ "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle file explorer" },
+		{ "<leader>E", "<cmd>Neotree reveal<CR>", desc = "Reveal current file" },
+	},
+}

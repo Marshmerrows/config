@@ -19,6 +19,7 @@ return {
 				"vimdoc",
 				"typescript",
 				"javascript",
+				"tsx",
 				"python",
 			},
 			-- Autoinstall languages that are not installed
@@ -34,5 +35,26 @@ return {
 		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
 		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		dependencies = "nvim-treesitter/nvim-treesitter",
+		main = "nvim-treesitter.configs",
+		opts = {
+			textobjects = {
+				select = {
+					enable = true,
+					lookahead = true,
+					keymaps = {
+						["at"] = "@tag.outer",
+						["it"] = "@tag.inner",
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
+					},
+				},
+			},
+		},
 	},
 }
