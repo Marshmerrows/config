@@ -4,7 +4,10 @@ export ZSH_DISABLE_COMPFIX=true
 
 export PATH="/opt/homebrew/bin:/usr/bin:$PATH"
 
+fpath+=$(brew --prefix)/share/zsh/site-functions
 autoload -Uz compinit && compinit
+autoload -U promptinit; promptinit
+prompt pure
 
 source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
 antidote load

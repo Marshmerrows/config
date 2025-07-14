@@ -1,6 +1,6 @@
 # omz stuff
 getantidote/use-omz
-ohmyzsh/ohmyzsh path:lib
+# ohmyzsh/ohmyzsh path:lib
 ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kube-ps1
 ohmyzsh/ohmyzsh path:plugins/git
