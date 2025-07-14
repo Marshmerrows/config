@@ -47,7 +47,6 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- tab buffer navigation
 vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-Tab>", ":bprev<CR>", { desc = "Previous buffer" })
-vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer" })
 -- Resize splits
 vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase height" })
 vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease height" })

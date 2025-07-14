@@ -3,19 +3,19 @@ return {
 	config = function()
 		-- Enable Copilot by default
 		vim.g.copilot_enabled = true
-
+		-- TODO: this did not work for tab completion lol, hoping default is ok...
 		-- VS Code-like tab completion
-		vim.g.copilot_no_tab_map = true
-		vim.g.copilot_assume_mapped = true
+		-- vim.g.copilot_no_tab_map = true
+		-- vim.g.copilot_assume_mapped = true
 
 		-- Set up keymaps for VS Code-like experience
-		vim.keymap.set("i", "<Tab>", function()
-			if vim.fn["copilot#Accept"]("") ~= "" then
-				return vim.fn["copilot#Accept"]("")
-			else
-				return vim.api.nvim_replace_termcodes("<Tab>", true, true, true)
-			end
-		end, { expr = true, replace_keycodes = false })
+		-- vim.keymap.set("i", "<Tab>", function()
+		-- 	if vim.fn["copilot#Accept"]("") ~= "" then
+		-- 		return vim.fn["copilot#Accept"]("")
+		-- 	else
+		-- 		return vim.api.nvim_replace_termcodes("<Tab>", true, true, true)
+		-- 	end
+		-- end, { expr = true, replace_keycodes = false })
 
 		-- Alternative suggestions
 		vim.keymap.set("i", "<M-]>", "<Plug>(copilot-next)", { desc = "Next Copilot suggestion" })
