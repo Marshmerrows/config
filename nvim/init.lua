@@ -57,7 +57,6 @@ vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase w
 vim.keymap.set("n", "<leader>wm", "<C-w>_<C-w>|", { desc = "Maximize window" })
 vim.keymap.set("n", "<leader>we", "<C-w>=", { desc = "Equal windows" })
 
--- Trigger autoread when files change on disk
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
 	command = "if mode() != 'c' | checktime | endif",
 	pattern = { "*" },

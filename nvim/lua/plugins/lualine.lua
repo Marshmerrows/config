@@ -12,15 +12,14 @@ return {
 			lualine_a = { "mode" },
 			lualine_b = { "branch", "diff" },
 			lualine_c = { { "filename", path = 1 }, "diagnostics" },
-			lualine_y = { "encoding", "fileformat", "filetype" },
 			lualine_z = { "location" },
 		},
 		tabline = {
 			lualine_a = {
 				{
 					"buffers",
-					show_filename_only = true,
-					mode = 2,
+					-- show_filename_only = true,
+					mode = 4,
 					symbols = {
 						modified = " ●",
 						alternate_file = "",
