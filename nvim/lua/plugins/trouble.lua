@@ -127,43 +127,13 @@ return {
 
 		-- LSP
 		{ "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
-		{ "gR", "<cmd>Trouble lsp_references toggle<cr>", desc = "LSP References (Trouble)" },
-		{ "gD", "<cmd>Trouble lsp_definitions toggle<cr>", desc = "LSP Definitions (Trouble)" },
-		{ "gI", "<cmd>Trouble lsp_implementations toggle<cr>", desc = "LSP Implementations (Trouble)" },
-		{ "gt", "<cmd>Trouble lsp_type_definitions toggle<cr>", desc = "LSP Type Definitions (Trouble)" },
+		-- { "gR", "<cmd>Trouble lsp_references toggle<cr>", desc = "LSP References (Trouble)" },
+		-- { "gD", "<cmd>Trouble lsp_definitions toggle<cr>", desc = "LSP Definitions (Trouble)" },
+		-- { "gI", "<cmd>Trouble lsp_implementations toggle<cr>", desc = "LSP Implementations (Trouble)" },
+		-- { "gt", "<cmd>Trouble lsp_type_definitions toggle<cr>", desc = "LSP Type Definitions (Trouble)" },
 
 		-- Location and Quickfix lists
 		{ "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
 		{ "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
-
-		-- Quick navigation
-		{
-			"[q",
-			function()
-				if require("trouble").is_open() then
-					require("trouble").prev()
-				else
-					local ok, err = pcall(vim.cmd.cprev)
-					if not ok then
-						vim.notify(err, vim.log.levels.ERROR)
-					end
-				end
-			end,
-			desc = "Previous Trouble/Quickfix Item",
-		},
-		{
-			"]q",
-			function()
-				if require("trouble").is_open() then
-					require("trouble").next()
-				else
-					local ok, err = pcall(vim.cmd.cnext)
-					if not ok then
-						vim.notify(err, vim.log.levels.ERROR)
-					end
-				end
-			end,
-			desc = "Next Trouble/Quickfix Item",
-		},
 	},
 }

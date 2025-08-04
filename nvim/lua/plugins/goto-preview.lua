@@ -1,43 +1,150 @@
-return {
-	"rmagatti/goto-preview",
-	config = function()
-		require("goto-preview").setup({
-			width = 120, -- Width of the floating window
-			height = 25, -- Height of the floating window
-			border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
-			default_mappings = false, -- Bind default mappings (we'll set our own)
-			debug = false, -- Print debug information
-			opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully opaque
-			resizable = true, -- Whether the floating window is resizable
-			post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook
-			post_close_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook
-			references = { -- Configure the telescope UI for slowing the references cycling window.
-				telescope = require("telescope.themes").get_dropdown({ hide_preview = false }),
-			},
-			-- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
-			focus_on_open = true, -- Focus the floating window when opening it
-			dismiss_on_move = false, -- Dismiss the floating window when moving the cursor
-			force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
-			bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
-			stack_floating_preview_windows = true, -- Whether to nest floating windows
-			preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
-		})
-	end,
-	keys = {
-		-- Override K for definition preview instead of regular LSP hover
-		{
-			"K",
-			function()
-				if vim.bo.filetype == "help" then
-					vim.cmd("help " .. vim.fn.expand("<cword>"))
-				else
-					require("goto-preview").goto_preview_definition()
-				end
-			end,
-			desc = "Preview Definition",
-		},
+-- return {
+-- 	"rmagatti/goto-preview",
+-- 	config = function()
+-- 		require("goto-preview").setup({
+-- 			width = 120, -- Width of the floating window
+-- 			height = 25, -- Height of the floating window
+-- 			border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
+-- 			default_mappings = false, -- Bind default mappings (we'll set our own)
+-- 			debug = false, -- Print debug information
+-- 			opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully opaque
+-- 			resizable = true, -- Whether the floating window is resizable
+-- 			post_open_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook
+-- 			post_close_hook = nil, -- A function taking two arguments, a buffer and a window to be ran as a hook
+-- 			references = { -- Configure the telescope UI for slowing the references cycling window.
+-- 				telescope = require("telescope.themes").get_dropdown({ hide_preview = false }),
+-- 			},
+-- 			-- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
+-- 			focus_on_open = true, -- Focus the floating window when opening it
+-- 			dismiss_on_move = false, -- Dismiss the floating window when moving the cursor
+-- 			force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
+-- 			bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
+-- 			stack_floating_preview_windows = true, -- Whether to nest floating windows
+-- 			preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
+-- 		})
+-- 	end,
+-- 	keys = {
+-- 		-- Override K for definition preview instead of regular LSP hover
+-- 		-- {
+-- 		-- 	"K",
+-- 		-- 	function()
+-- 		-- 		if vim.bo.filetype == "help" then
+-- 		-- 			vim.cmd("help " .. vim.fn.expand("<cword>"))
+-- 		-- 		else
+-- 		-- 			require("goto-preview").goto_preview_definition()
+-- 		-- 		end
+-- 		-- 	end,
+-- 		-- 	desc = "Preview Definition",
+-- 		-- },
+--
+-- 		-- Close all preview windows
+-- 		{ "<leader>pc", "<cmd>lua require('goto-preview').close_all_win()<CR>", desc = "Close All Previews" },
+-- 	},
+-- }
 
-		-- Close all preview windows
-		{ "<leader>pc", "<cmd>lua require('goto-preview').close_all_win()<CR>", desc = "Close All Previews" },
-	},
+return {
+	"dnlhc/glance.nvim",
+	cmd = "Glance",
+	event = "LspAttach",
+	config = function()
+		local glance = require("glance")
+		local actions = glance.actions
+
+		glance.setup({
+			height = 18, -- Height of the window
+			zindex = 45,
+			-- When enabled, adds virtual lines behind the preview window to maintain context in the parent window
+			-- Requires Neovim >= 0.10.0
+			preserve_win_context = true,
+
+			-- Controls whether the preview window is "embedded" within your parent window or floating
+			-- above all windows.
+			detached = function(winid)
+				-- Automatically detach when parent window width < 100 columns
+				return vim.api.nvim_win_get_width(winid) < 100
+			end,
+
+			-- Preview window options
+			preview_win_opts = {
+				cursorline = true,
+				number = true,
+				wrap = true,
+			},
+
+			-- Border configuration
+			border = {
+				enable = true,
+				top_char = "─",
+				bottom_char = "─",
+			},
+
+			-- List configuration
+			list = {
+				position = "right", -- Position of the list window 'left'|'right'
+				width = 0.33, -- 33% of screen width
+			},
+
+			-- Theme options
+			theme = { -- https://github.com/DNLHC/glance.nvim#themes
+				enable = true, -- Will apply colors to Glance
+				mode = "auto", -- 'brighten'|'darken'|'auto'
+			},
+
+			-- Mappings inside glance window
+			mappings = {
+				list = {
+					["j"] = actions.next, -- Bring the cursor to the next item in the list
+					["k"] = actions.previous, -- Bring the cursor to the previous item in the list
+					["<Down>"] = actions.next,
+					["<Up>"] = actions.previous,
+					["<Tab>"] = actions.next_location, -- Bring the cursor to the next location skipping groups in the list
+					["<S-Tab>"] = actions.previous_location, -- Bring the cursor to the previous location skipping groups in the list
+					["<C-u>"] = actions.preview_scroll_win(5),
+					["<C-d>"] = actions.preview_scroll_win(-5),
+					["v"] = actions.jump_vsplit,
+					["s"] = actions.jump_split,
+					["t"] = actions.jump_tab,
+					["<CR>"] = actions.jump,
+					["o"] = actions.jump,
+					["l"] = actions.open_fold,
+					["h"] = actions.close_fold,
+					["<leader>l"] = actions.enter_win("preview"), -- Focus preview window
+					["q"] = actions.close,
+					["Q"] = actions.close,
+					["<Esc>"] = actions.close,
+				},
+				preview = {
+					["Q"] = actions.close,
+					["<Tab>"] = actions.next_location,
+					["<S-Tab>"] = actions.previous_location,
+					["<leader>l"] = actions.enter_win("list"), -- Focus list window
+				},
+			},
+
+			hooks = {},
+
+			folds = {
+				fold_closed = "",
+				fold_open = "",
+				folded = true, -- Automatically fold list on startup
+			},
+
+			indent_lines = {
+				enable = true, -- Show indent guidelines
+				icon = "│",
+			},
+
+			winbar = {
+				enable = true, -- Enable winbar for the preview (requires neovim-0.8+)
+			},
+
+			use_trouble_qf = true, -- Quickfix action will open trouble.nvim instead of built-in quickfix list
+		})
+
+		-- Your capital letter mappings for glance
+		vim.keymap.set("n", "gD", "<CMD>Glance definitions<CR>", { desc = "Glance definitions" })
+		vim.keymap.set("n", "gR", "<CMD>Glance references<CR>", { desc = "Glance references" })
+		vim.keymap.set("n", "gY", "<CMD>Glance type_definitions<CR>", { desc = "Glance type definitions" })
+		vim.keymap.set("n", "gM", "<CMD>Glance implementations<CR>", { desc = "Glance implementations" })
+	end,
 }

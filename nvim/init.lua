@@ -9,21 +9,24 @@ vim.o.showmode = false
 vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
 end)
-vim.o.breakindent = true
 vim.o.undofile = true
+
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
 vim.o.signcolumn = "yes:1"
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 vim.o.autoread = true
 vim.o.splitright = true
 vim.o.splitbelow = true
+
 vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.o.inccommand = "split"
 vim.o.cursorline = true
 vim.o.scrolloff = 3
+
 vim.o.tabstop = 2 -- Number of spaces a tab character displays as
 vim.o.softtabstop = 2 -- Number of spaces for <Tab> in insert mode
 vim.o.shiftwidth = 2 -- Number of spaces for autoindent (e.g. when you press Enter)
@@ -31,15 +34,14 @@ vim.o.expandtab = true -- Convert tabs to spaces
 vim.o.autoindent = true
 vim.o.smartindent = true
 vim.o.confirm = true
-vim.opt.autoread = true -- Auto-reload files when changed outside of vim
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 -- Map ii to escape in insert mode
 vim.keymap.set("i", "ii", "<Esc>", { desc = "Exit insert mode" })
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" }) -- Diagnostic keymaps
 
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" }) --  See `:help wincmd` for a list of all window commands
+--  See `:help wincmd` for a list of all window commands
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
@@ -48,20 +50,26 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<S-Tab>", ":bprev<CR>", { desc = "Previous buffer" })
 -- Resize splits
-vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase height" })
-vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease height" })
-vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease width" })
-vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase width" })
+vim.keymap.set("n", "<C-S-Up>", ":resize +2<CR>", { desc = "Increase height" })
+vim.keymap.set("n", "<C-S-Down>", ":resize -2<CR>", { desc = "Decrease height" })
+vim.keymap.set("n", "<C-S-Left>", ":vertical resize -2<CR>", { desc = "Decrease width" })
+vim.keymap.set("n", "<C-S-Right>", ":vertical resize +2<CR>", { desc = "Increase width" })
 
 -- Maximize/minimize splits
-vim.keymap.set("n", "<leader>wm", "<C-w>_<C-w>|", { desc = "Maximize window" })
-vim.keymap.set("n", "<leader>we", "<C-w>=", { desc = "Equal windows" })
+vim.keymap.set("n", "<leader>wf", "<C-w>_<C-w>|", { desc = "[W]indow [F]ull" })
+vim.keymap.set("n", "<leader>we", "<C-w>=", { desc = "[W]indow [E]qualize" })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
-	command = "if mode() != 'c' | checktime | endif",
-	pattern = { "*" },
+-- Reload buffer on external change
+vim.api.nvim_create_autocmd("FocusGained", {
+	desc = "Reload files from disk when we focus vim",
+	pattern = "*",
+	command = "if getcmdwintype() == '' | checktime | endif",
 })
-
+vim.api.nvim_create_autocmd("BufEnter", {
+	desc = "Every time we enter an unmodified buffer, check if it changed on disk",
+	pattern = "*",
+	command = "if &buftype == '' && !&modified && expand('%') != '' | exec 'checktime ' . expand('<abuf>') | endif",
+})
 -- Notification when file is reloaded
 vim.api.nvim_create_autocmd("FileChangedShellPost", {
 	pattern = "*",
