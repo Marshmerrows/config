@@ -6,7 +6,7 @@ return {
 			theme = "auto",
 			component_separators = { left = "", right = "" },
 			section_separators = { left = "", right = "" },
-			globalstatus = true,
+			globalstatus = false,
 		},
 		sections = {
 			lualine_a = { "mode" },

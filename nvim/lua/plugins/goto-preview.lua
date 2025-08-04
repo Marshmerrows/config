@@ -121,7 +121,15 @@ return {
 				},
 			},
 
-			hooks = {},
+			hooks = {
+				-- before_open = function(results, open, jump, method)
+				-- 	open(results)
+				-- 	-- Focus the preview window after opening
+				-- 	vim.schedule(function()
+				-- 		require("glance").actions.enter_win("preview")()
+				-- 	end)
+				-- end,
+			},
 
 			folds = {
 				fold_closed = "",
