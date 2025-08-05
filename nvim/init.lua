@@ -95,9 +95,21 @@ vim.api.nvim_create_autocmd("SwapExists", {
 
 -- Delete swap file after successful buffer write
 vim.api.nvim_create_autocmd("BufWritePost", {
-	callback = function()
-		local swapfile = vim.fn.swapname(vim.fn.bufname())
-		if swapfile ~= "" and vim.fn.filereadable(swapfile) == 1 then
+	callback = function(args)
+		-- Use the actual buffer number from the event instead of bufname()
+		local bufnr = args.buf
+
+		-- Check if buffer is still valid
+		if not vim.api.nvim_buf_is_valid(bufnr) then
+			return
+		end
+
+		local ok, swapfile = pcall(vim.fn.swapname, bufnr)
+		if not ok or swapfile == "" then
+			return
+		end
+
+		if vim.fn.filereadable(swapfile) == 1 then
 			vim.fn.delete(swapfile)
 		end
 	end,
