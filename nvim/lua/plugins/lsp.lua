@@ -59,15 +59,18 @@ return {
 
 					-- Find references for the word under your cursor.
 					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+					map("grr", "<cmd>Trouble lsp_references toggle<cr>", "[G]oto [R]eferences (Trouble)")
 
 					-- Jump to the implementation of the word under your cursor.
 					--  Useful when your language has ways of declaring types without an actual implementation.
 					map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+					map("gii", "<cmd>Trouble lsp_implementations toggle<cr>", "[G]oto [I]mplementations (Trouble)")
 
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
 					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map("gdd", "<cmd>Trouble lsp_definitions toggle<cr>", "[G]oto [D]efinitions (Trouble)")
 
 					-- WARN: This is not Goto Definition, this is Goto Declaration.
 					--  For example, in C this would take you to the header.
@@ -77,6 +80,7 @@ return {
 					--  Useful when you're not sure what type a variable is and you want to see
 					--  the definition of its *type*, not where it was *defined*.
 					map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+					map("gtt", "<cmd>Trouble lsp_type_definitions toggle<cr>", "[G]oto [T]ype Definitions (Trouble)")
 
 					-- Fuzzy find all the symbols in your current document.
 					--  Symbols are things like variables, functions, types, etc.
