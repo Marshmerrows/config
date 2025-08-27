@@ -121,21 +121,21 @@ return {
 		})
 
 		-- Auto-open Neo-tree when starting nvim without a file
-		vim.api.nvim_create_autocmd("VimEnter", {
-			group = vim.api.nvim_create_augroup("neotree_auto_open", { clear = true }),
-			callback = function()
-				local stats = vim.loop.fs_stat(vim.fn.argv(0))
-				-- Open neo-tree if no files given OR if given a directory
-				if vim.fn.argc() == 0 or (stats and stats.type == "directory") then
-					vim.schedule(function()
-						if stats and stats.type == "directory" then
-							vim.cmd("cd " .. vim.fn.argv(0))
-						end
-						vim.cmd("Neotree show")
-					end)
-				end
-			end,
-		})
+		-- vim.api.nvim_create_autocmd("VimEnter", {
+		-- 	group = vim.api.nvim_create_augroup("neotree_auto_open", { clear = true }),
+		-- 	callback = function()
+		-- 		local stats = vim.loop.fs_stat(vim.fn.argv(0))
+		-- 		-- Open neo-tree if no files given OR if given a directory
+		-- 		if vim.fn.argc() == 0 or (stats and stats.type == "directory") then
+		-- 			vim.schedule(function()
+		-- 				if stats and stats.type == "directory" then
+		-- 					vim.cmd("cd " .. vim.fn.argv(0))
+		-- 				end
+		-- 				vim.cmd("Neotree show")
+		-- 			end)
+		-- 		end
+		-- 	end,
+		-- })
 	end,
 	keys = {
 		{ "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle file explorer" },
