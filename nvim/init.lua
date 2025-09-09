@@ -115,6 +115,12 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	end,
 })
 
+-- JsonFormat on empty files
+vim.api.nvim_create_user_command("JsonFormat", function()
+	vim.bo.filetype = "json"
+	require("conform").format({ async = true, lsp_fallback = true })
+end, {})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
