@@ -14,6 +14,7 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+vim.o.winborder = "rounded"
 vim.o.signcolumn = "yes:1"
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
