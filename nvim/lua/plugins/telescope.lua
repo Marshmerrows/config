@@ -24,6 +24,7 @@ return {
 							["q"] = actions.close,
 						},
 					},
+					border = false,
 				},
 				-- pickers = {}
 				extensions = {
