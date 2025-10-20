@@ -17,12 +17,12 @@ function get_window_under_mouse()
  
  drag_event = hs.eventtap.new({ hs.eventtap.event.types.mouseMoved }, function(e)
        if not dragging then return nil end
-       dragging.win:focus()
        if dragging.mode==1 then -- just move
-          local dx = e:getProperty(hs.eventtap.event.properties.mouseEventDeltaX)
-          local dy = e:getProperty(hs.eventtap.event.properties.mouseEventDeltaY)
-          dragging.win:move({dx, dy}, nil, false, 0)
-       else -- resize
+          local pos=hs.mouse.absolutePosition()
+          local x1 = dragging.pos.x + (pos.x-dragging.off.x)
+          local y1 = dragging.pos.y + (pos.y-dragging.off.y)
+          dragging.win:setTopLeft({x=x1, y=y1})
+       else -- resize (keeping original absolute positioning for external display compatibility)
           local pos=hs.mouse.absolutePosition()
           local w1 = dragging.size.w + (pos.x-dragging.off.x)
           local h1 = dragging.size.h + (pos.y-dragging.off.y)
@@ -42,11 +42,14 @@ function get_window_under_mouse()
              if not dragging.win then -- no good window
                 dragging=nil
                 return nil
-             end 
+             end
+             dragging.win:focus() -- Focus once at start, not on every mouse move
           end
           dragging.mode = mode   -- 1=drag, 3=resize
-          if mode==3 then
-             dragging.off=hs.mouse.absolutePosition()
+          dragging.off=hs.mouse.absolutePosition()
+          if mode==1 then
+             dragging.pos=dragging.win:topLeft()
+          else -- mode==3
              dragging.size=dragging.win:size()
           end
           drag_event:start()
