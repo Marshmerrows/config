@@ -17,6 +17,11 @@ function get_window_under_mouse()
  
  drag_event = hs.eventtap.new({ hs.eventtap.event.types.mouseMoved }, function(e)
        if not dragging then return nil end
+       -- Focus the window on first actual movement
+       if not dragging.focused then
+          dragging.win:focus()
+          dragging.focused = true
+       end
        if dragging.mode==1 then -- just move
           local pos=hs.mouse.absolutePosition()
           local x1 = dragging.pos.x + (pos.x-dragging.off.x)
@@ -38,12 +43,11 @@ function get_window_under_mouse()
              if dragging.mode == mode then return nil end -- already working
           else
              -- only update window if we hadn't started dragging/resizing already
-             dragging={win = get_window_under_mouse()}
+             dragging={win = get_window_under_mouse(), focused = false}
              if not dragging.win then -- no good window
                 dragging=nil
                 return nil
              end
-             dragging.win:focus() -- Focus once at start, not on every mouse move
           end
           dragging.mode = mode   -- 1=drag, 3=resize
           dragging.off=hs.mouse.absolutePosition()
