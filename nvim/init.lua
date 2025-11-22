@@ -1,6 +1,6 @@
 -- Version guard
-if vim.fn.has("nvim-0.11") == 0 then
-	error("This config requires Neovim 0.11+")
+if vim.fn.has("nvim-0.12") == 0 then
+	error("This config requires Neovim 0.12+")
 end
 
 -- Leader key (must be before plugins)
@@ -167,16 +167,37 @@ setup("mason", {})
 setup("mason-tool-installer", {
 	ensure_installed = {
 		-- LSPs
-		"lua_ls", "ts_ls", "basedpyright", "svelte", "html", "cssls", "jsonls", "yamlls",
+		"lua_ls",
+		"ts_ls",
+		"basedpyright",
+		"svelte",
+		"html",
+		"cssls",
+		"jsonls",
+		"yamlls",
 		-- Formatters & Linters
-		"stylua", "ruff", "black", "isort", "prettierd", "pgformatter", "biome", "eslint_d",
+		"stylua",
+		"ruff",
+		"black",
+		"isort",
+		"prettierd",
+		"pgformatter",
+		"biome",
+		"eslint_d",
 	},
 })
 setup("mason-lspconfig", {
 	ensure_installed = {}, -- Handled by mason-tool-installer
 	handlers = {
 		function(server_name)
-			local config = { capabilities = require("blink.cmp").get_lsp_capabilities() }
+			-- Safely get blink.cmp capabilities
+			local capabilities = nil
+			local ok, blink = pcall(require, "blink.cmp")
+			if ok then
+				capabilities = blink.get_lsp_capabilities()
+			end
+
+			local config = { capabilities = capabilities }
 			local config_path = vim.fn.stdpath("config") .. "/after/lsp/" .. server_name .. ".lua"
 			if vim.fn.filereadable(config_path) == 1 then
 				local custom = dofile(config_path)
@@ -208,9 +229,12 @@ setup("nvim-treesitter.configs", {
 			enable = true,
 			lookahead = true,
 			keymaps = {
-				["af"] = "@function.outer", ["if"] = "@function.inner",
-				["ac"] = "@class.outer", ["ic"] = "@class.inner",
-				["at"] = "@tag.outer", ["it"] = "@tag.inner",
+				["af"] = "@function.outer",
+				["if"] = "@function.inner",
+				["ac"] = "@class.outer",
+				["ic"] = "@class.inner",
+				["at"] = "@tag.outer",
+				["it"] = "@tag.inner",
 			},
 		},
 	},
@@ -296,13 +320,21 @@ if snacks then
 	vim.keymap.set("n", "<leader>s/", picker.grep_buffers, { desc = "Search in open files" })
 	vim.keymap.set("n", "<leader>sc", function()
 		local filename = vim.fn.expand("%:t:r")
-		Snacks.picker.grep({ search = "<" .. filename })
+		snacks.picker.grep({ search = "<" .. filename })
 	end, { desc = "Search component refs" })
 
-	vim.keymap.set("n", "<leader>bd", function() snacks.bufdelete() end, { desc = "Delete buffer" })
-	vim.keymap.set("n", "<leader>bw", function() snacks.bufdelete.wipe() end, { desc = "Wipeout buffer" })
-	vim.keymap.set("n", "<leader>ba", function() snacks.bufdelete.all() end, { desc = "Close all buffers" })
-	vim.keymap.set("n", "<leader>gy", function() Snacks.gitbrowse() end, { desc = "Git browse" })
+	vim.keymap.set("n", "<leader>bd", function()
+		snacks.bufdelete()
+	end, { desc = "Delete buffer" })
+	vim.keymap.set("n", "<leader>bw", function()
+		snacks.bufdelete.wipe()
+	end, { desc = "Wipeout buffer" })
+	vim.keymap.set("n", "<leader>ba", function()
+		snacks.bufdelete.all()
+	end, { desc = "Close all buffers" })
+	vim.keymap.set("n", "<leader>gy", function()
+		snacks.gitbrowse()
+	end, { desc = "Git browse" })
 end
 
 -- Oil
@@ -326,7 +358,11 @@ setup("mini.pairs", {})
 
 -- Autotags
 setup("nvim-ts-autotag", {
-	opts = { enable_close = true, enable_rename = true, enable_close_on_slash = false },
+	opts = {
+		enable_close = true,
+		enable_rename = true,
+		enable_close_on_slash = false,
+	},
 })
 
 -- Conform
@@ -372,8 +408,12 @@ local trouble = setup("trouble", {
 	modes = { lsp_references = { params = { include_declaration = true } } },
 })
 if trouble then
-	vim.keymap.set("n", "]t", function() trouble.next({ skip_groups = true, jump = true }) end, { desc = "Next trouble" })
-	vim.keymap.set("n", "[t", function() trouble.prev({ skip_groups = true, jump = true }) end, { desc = "Prev trouble" })
+	vim.keymap.set("n", "]t", function()
+		trouble.next({ skip_groups = true, jump = true })
+	end, { desc = "Next trouble" })
+	vim.keymap.set("n", "[t", function()
+		trouble.prev({ skip_groups = true, jump = true })
+	end, { desc = "Prev trouble" })
 end
 vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics" })
 vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer diagnostics" })
