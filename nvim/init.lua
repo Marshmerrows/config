@@ -1,6 +1,6 @@
 -- Version guard
-if vim.fn.has("nvim-0.12") == 0 then
-	error("This config requires Neovim 0.12+")
+if vim.fn.has("nvim-0.11") == 0 then
+	error("This config requires Neovim 0.11+")
 end
 
 -- Leader key (must be before plugins)
@@ -35,6 +35,7 @@ vim.o.expandtab = true
 vim.o.autoindent = true
 vim.o.smartindent = true
 vim.o.confirm = true
+vim.o.showtabline = 2
 
 vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
@@ -70,7 +71,6 @@ vim.keymap.set("n", "<leader>we", "<C-w>=", { desc = "Window equalize" })
 -- =============================================================================
 local augroup = vim.api.nvim_create_augroup("user-config", { clear = true })
 
--- Reload buffer on external change
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
 	group = augroup,
 	callback = function()
@@ -87,7 +87,6 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
 	end,
 })
 
--- Highlight when yanking
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = augroup,
 	callback = function()
@@ -95,40 +94,26 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- Auto-recover and clean swap files
-vim.api.nvim_create_autocmd("SwapExists", {
-	group = augroup,
-	callback = function()
-		vim.v.swapchoice = "r"
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufWritePost", {
-	group = augroup,
-	callback = function(args)
-		if not vim.api.nvim_buf_is_valid(args.buf) then
-			return
-		end
-		local ok, swapfile = pcall(vim.fn.swapname, args.buf)
-		if ok and swapfile ~= "" and vim.fn.filereadable(swapfile) == 1 then
-			vim.fn.delete(swapfile)
-		end
-	end,
-})
-
 -- =============================================================================
 -- PLUGINS
 -- =============================================================================
+package.preload["nvim-web-devicons"] = function()
+	require("mini.icons").setup()
+	MiniIcons.mock_nvim_web_devicons()
+	return package.loaded["nvim-web-devicons"]
+end
+
 vim.pack.add({
 	-- Theme
 	{ src = "https://github.com/rebelot/kanagawa.nvim" },
 
-	-- LSP & Tools
+	-- LSP
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
+	{ src = "https://github.com/williamboman/mason-lspconfig.nvim" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim" },
-	{ src = "https://github.com/j-hui/fidget.nvim" },
 
-	-- Completion & Snippets
+	-- Completion
 	{ src = "https://github.com/saghen/blink.cmp" },
 	{ src = "https://github.com/L3MON4D3/LuaSnip" },
 
@@ -138,9 +123,8 @@ vim.pack.add({
 
 	-- UI
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
-	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
+	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/folke/which-key.nvim" },
-	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 
 	-- Navigation
 	{ src = "https://github.com/folke/snacks.nvim" },
@@ -148,31 +132,24 @@ vim.pack.add({
 
 	-- Editing
 	{ src = "https://github.com/echasnovski/mini.nvim" },
-	{ src = "https://github.com/windwp/nvim-autopairs" },
 	{ src = "https://github.com/windwp/nvim-ts-autotag" },
-	{ src = "https://github.com/smjonas/inc-rename.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 
 	-- Git
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/ruifm/gitlinker.nvim" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 
 	-- Utilities
-	{ src = "https://github.com/moll/vim-bbye" },
 	{ src = "https://github.com/folke/trouble.nvim" },
 	{ src = "https://github.com/folke/todo-comments.nvim" },
+	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/github/copilot.vim" },
 })
 
--- Colorscheme
 vim.cmd.colorscheme("kanagawa-dragon")
 
 -- =============================================================================
 -- PLUGIN SETUP
 -- =============================================================================
-
--- Helper for safe requires
 local function setup(name, opts)
 	local ok, mod = pcall(require, name)
 	if not ok then
@@ -185,18 +162,30 @@ local function setup(name, opts)
 	return mod
 end
 
--- Mason
+-- Mason & LSP
 setup("mason", {})
 setup("mason-tool-installer", {
 	ensure_installed = {
-		"lua-language-server", "typescript-language-server", "basedpyright",
-		"svelte-language-server", "html-lsp", "css-lsp", "json-lsp", "yaml-language-server",
-		"stylua", "ruff", "black", "isort", "prettierd", "pgformatter", "biome",
+		-- LSPs
+		"lua_ls", "ts_ls", "basedpyright", "svelte", "html", "cssls", "jsonls", "yamlls",
+		-- Formatters & Linters
+		"stylua", "ruff", "black", "isort", "prettierd", "pgformatter", "biome", "eslint_d",
 	},
 })
-
--- Fidget
-setup("fidget", {})
+setup("mason-lspconfig", {
+	ensure_installed = {}, -- Handled by mason-tool-installer
+	handlers = {
+		function(server_name)
+			local config = { capabilities = require("blink.cmp").get_lsp_capabilities() }
+			local config_path = vim.fn.stdpath("config") .. "/after/lsp/" .. server_name .. ".lua"
+			if vim.fn.filereadable(config_path) == 1 then
+				local custom = dofile(config_path)
+				config = vim.tbl_deep_extend("force", config, custom)
+			end
+			require("lspconfig")[server_name].setup(config)
+		end,
+	},
+})
 
 -- Blink.cmp
 setup("blink.cmp", {
@@ -205,7 +194,7 @@ setup("blink.cmp", {
 	completion = { documentation = { auto_show = true, auto_show_delay_ms = 500 } },
 	sources = { default = { "lsp", "path", "snippets" } },
 	snippets = { preset = "luasnip" },
-	fuzzy = { implementation = "prefer_rust" },
+	fuzzy = { implementation = "lua" },
 	signature = { enabled = true },
 })
 
@@ -241,13 +230,18 @@ setup("lualine", {
 		lualine_y = { "branch", "diff" },
 		lualine_z = { "location" },
 	},
-	tabline = {
-		lualine_a = { { "buffers", mode = 4, symbols = { modified = " ●" } } },
-	},
 })
 
--- Indent Blankline
-setup("ibl", { indent = { char = "│" } })
+-- Bufferline
+setup("bufferline", {
+	options = {
+		mode = "buffers",
+		diagnostics = "nvim_lsp",
+		show_buffer_close_buttons = false,
+		show_close_icon = false,
+		separator_style = "thin",
+	},
+})
 
 -- Which-key
 setup("which-key", {
@@ -256,7 +250,7 @@ setup("which-key", {
 	spec = {
 		{ "<leader>s", group = "Search" },
 		{ "<leader>t", group = "Toggle" },
-		{ "<leader>h", group = "Git Hunk", mode = { "n", "v" } },
+		{ "<leader>g", group = "Git" },
 	},
 })
 
@@ -279,9 +273,11 @@ local snacks = setup("snacks", {
 	notifier = { enabled = true },
 	quickfile = { enabled = true },
 	words = { enabled = true },
+	indent = { enabled = true },
+	bufdelete = { enabled = true },
+	git = { enabled = true },
 })
 
--- Snacks keymaps
 if snacks then
 	local picker = snacks.picker
 	vim.keymap.set("n", "<leader>sh", picker.help, { desc = "Search help" })
@@ -298,6 +294,15 @@ if snacks then
 	vim.keymap.set("n", "<leader>sp", picker.pickers, { desc = "Search pickers" })
 	vim.keymap.set("n", "<leader>/", picker.lines, { desc = "Search in buffer" })
 	vim.keymap.set("n", "<leader>s/", picker.grep_buffers, { desc = "Search in open files" })
+	vim.keymap.set("n", "<leader>sc", function()
+		local filename = vim.fn.expand("%:t:r")
+		Snacks.picker.grep({ search = "<" .. filename })
+	end, { desc = "Search component refs" })
+
+	vim.keymap.set("n", "<leader>bd", function() snacks.bufdelete() end, { desc = "Delete buffer" })
+	vim.keymap.set("n", "<leader>bw", function() snacks.bufdelete.wipe() end, { desc = "Wipeout buffer" })
+	vim.keymap.set("n", "<leader>ba", function() snacks.bufdelete.all() end, { desc = "Close all buffers" })
+	vim.keymap.set("n", "<leader>gy", function() Snacks.gitbrowse() end, { desc = "Git browse" })
 end
 
 -- Oil
@@ -317,15 +322,12 @@ end
 setup("mini.ai", { n_lines = 500 })
 setup("mini.surround", {})
 setup("mini.icons", {})
+setup("mini.pairs", {})
 
--- Autopairs & Autotags
-setup("nvim-autopairs", {})
+-- Autotags
 setup("nvim-ts-autotag", {
 	opts = { enable_close = true, enable_rename = true, enable_close_on_slash = false },
 })
-
--- Inc-rename
-setup("inc_rename", {})
 
 -- Conform
 local conform = setup("conform", {
@@ -355,7 +357,6 @@ if conform then
 	end, { desc = "Format buffer" })
 end
 
--- JsonFormat command
 vim.api.nvim_create_user_command("JsonFormat", function()
 	vim.bo.filetype = "json"
 	if conform then
@@ -365,26 +366,6 @@ end, {})
 
 -- Gitsigns
 setup("gitsigns", { current_line_blame = true })
-
--- Gitlinker
-local gitlinker_actions = require("gitlinker.actions")
-setup("gitlinker", {
-	opts = {
-		add_current_line_on_normal_mode = true,
-		action_callback = gitlinker_actions.copy_to_clipboard,
-		print_url = true,
-	},
-	callbacks = {
-		["github.com"] = require("gitlinker.hosts").get_github_type_url,
-	},
-	mappings = "<leader>gy",
-})
-vim.keymap.set("n", "<leader>gY", function()
-	require("gitlinker").get_repo_url()
-end, { desc = "Copy repo URL" })
-vim.keymap.set({ "n", "v" }, "<leader>gb", function()
-	require("gitlinker").get_buf_range_url("n", { action_callback = gitlinker_actions.open_in_browser })
-end, { desc = "Open in browser" })
 
 -- Trouble
 local trouble = setup("trouble", {
@@ -402,10 +383,6 @@ vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Qu
 
 -- Todo Comments
 setup("todo-comments", { signs = false })
-
--- Vim-bbye
-vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<cr>", { desc = "Delete buffer" })
-vim.keymap.set("n", "<leader>bw", "<cmd>Bwipeout<cr>", { desc = "Wipeout buffer" })
 
 -- Copilot
 vim.g.copilot_enabled = true
@@ -431,10 +408,6 @@ vim.diagnostic.config({
 	virtual_text = { source = "if_many", spacing = 2 },
 })
 
-vim.lsp.enable({
-	"lua_ls", "ts_ls", "basedpyright", "svelte", "html", "cssls", "jsonls", "yamlls",
-})
-
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
 	callback = function(event)
@@ -442,7 +415,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.keymap.set(mode or "n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 		end
 
-		-- Navigation (using Snacks picker)
 		if snacks then
 			map("gd", snacks.picker.lsp_definitions, "Go to definition")
 			map("gr", snacks.picker.lsp_references, "Go to references")
@@ -450,12 +422,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			map("gt", snacks.picker.lsp_type_definitions, "Go to type definition")
 		end
 		map("gD", vim.lsp.buf.declaration, "Go to declaration")
-
-		-- Actions
 		map("grn", vim.lsp.buf.rename, "Rename")
 		map("ga", vim.lsp.buf.code_action, "Code action", { "n", "x" })
 
-		-- Document highlights
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
 			local hl_group = vim.api.nvim_create_augroup("lsp-highlight", { clear = false })
@@ -478,7 +447,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		-- Inlay hints
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
 			map("<leader>th", function()
 				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))

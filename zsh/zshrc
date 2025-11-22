@@ -3,6 +3,7 @@ export DISABLE_AUTO_UPDATE=true
 export ZSH_DISABLE_COMPFIX=true
 
 export PATH="/opt/homebrew/bin:/usr/bin:$PATH"
+export PATH="/usr/local/nvim-nightly/bin:$PATH"
 
 fpath+=$(brew --prefix)/share/zsh/site-functions
 autoload -Uz compinit && compinit
