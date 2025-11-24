@@ -142,7 +142,6 @@ vim.pack.add({
 	{ src = "https://github.com/folke/trouble.nvim" },
 	{ src = "https://github.com/folke/todo-comments.nvim" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-	{ src = "https://github.com/github/copilot.vim" },
 })
 
 vim.cmd.colorscheme("kanagawa-dragon")
@@ -175,6 +174,7 @@ setup("mason-tool-installer", {
 		"cssls",
 		"jsonls",
 		"yamlls",
+		"copilot-language-server",
 		-- Formatters & Linters
 		"stylua",
 		"ruff",
@@ -261,7 +261,7 @@ setup("bufferline", {
 	options = {
 		mode = "buffers",
 		diagnostics = "nvim_lsp",
-		show_buffer_close_buttons = false,
+		show_buffer_close_icons = false,
 		show_close_icon = false,
 		separator_style = "thin",
 	},
@@ -424,12 +424,6 @@ vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Qu
 -- Todo Comments
 setup("todo-comments", { signs = false })
 
--- Copilot
-vim.g.copilot_enabled = true
-vim.g.copilot_no_tab_map = true
-vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<CR>")', { expr = true, replace_keycodes = false })
-vim.g.copilot_filetypes = { ["*"] = true, gitcommit = false, gitrebase = false, help = false }
-
 -- =============================================================================
 -- LSP
 -- =============================================================================
@@ -492,5 +486,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
 			end, "Toggle inlay hints")
 		end
+
+		-- Enable inline completion for clients that support it (e.g., Copilot)
+		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, event.buf) then
+			vim.lsp.inline_completion.enable(true, { bufnr = event.buf })
+		end
 	end,
 })
+
+-- Copilot: Accept inline completion with Shift-Tab
+vim.keymap.set("i", "<S-Tab>", function()
+	if not vim.lsp.inline_completion.get() then
+		return "<S-Tab>"
+	end
+end, { expr = true, desc = "Accept inline completion" })
