@@ -3,6 +3,9 @@ if vim.fn.has("nvim-0.12") == 0 then
 	error("This config requires Neovim 0.12+")
 end
 
+-- Use Node 22+ for LSP servers (e.g., copilot-language-server) regardless of project mise config
+vim.env.MISE_NODE_VERSION = "22"
+
 -- Leader key (must be before plugins)
 vim.g.mapleader = " "
 
@@ -219,9 +222,17 @@ setup("blink.cmp", {
 	signature = { enabled = true },
 })
 
+vim.api.nvim_create_autocmd("User", {
+	pattern = "BlinkCmpMenuClose",
+	callback = function()
+		vim.cmd("redraw!")
+	end,
+})
+
 -- Treesitter
 setup("nvim-treesitter.configs", {
 	auto_install = true,
+	ensure_installed = { "lua", "javascript", "typescript", "svelte", "html", "css", "json", "yaml", "python" },
 	highlight = { enable = true },
 	indent = { enable = true, disable = { "ruby", "python", "c" } },
 	textobjects = {
