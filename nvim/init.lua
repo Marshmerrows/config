@@ -100,6 +100,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- =============================================================================
 -- PLUGINS
 -- =============================================================================
+
+--- For compatibility with nvim-web-devicons
+---@diagnostic disable-next-line: duplicate-set-field
 package.preload["nvim-web-devicons"] = function()
 	require("mini.icons").setup()
 	MiniIcons.mock_nvim_web_devicons()
