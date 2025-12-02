@@ -181,6 +181,7 @@ setup("mason-tool-installer", {
 		"jsonls",
 		"yamlls",
 		"copilot-language-server",
+		"rust-analyzer",
 		-- Formatters & Linters
 		"stylua",
 		"ruff",
