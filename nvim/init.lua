@@ -504,14 +504,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		-- Enable inline completion for clients that support it (e.g., Copilot)
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, event.buf) then
-			vim.lsp.inline_completion.enable(true, { bufnr = event.buf })
+			vim.lsp.inline_completion.enable(true)
+			vim.keymap.set("i", "<S-Tab>", function()
+				if not vim.lsp.inline_completion.get() then
+					return "<S-Tab>"
+				end
+			end, { buffer = event.buf, expr = true, replace_keycodes = true, desc = "Accept inline completion" })
 		end
 	end,
 })
-
--- Copilot: Accept inline completion with Shift-Tab
-vim.keymap.set("i", "<S-Tab>", function()
-	if not vim.lsp.inline_completion.get() then
-		return "<S-Tab>"
-	end
-end, { expr = true, desc = "Accept inline completion" })
