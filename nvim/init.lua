@@ -229,9 +229,12 @@ setup("blink.cmp", {
 vim.api.nvim_create_autocmd("User", {
 	pattern = "BlinkCmpMenuClose",
 	callback = function()
-		vim.cmd("redraw!")
+		vim.schedule(function()
+			vim.cmd("mode")
+		end)
 	end,
 })
+
 
 -- Treesitter
 setup("nvim-treesitter.configs", {
