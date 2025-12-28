@@ -5,8 +5,7 @@ CONFIG_DIR="$(pwd)"
 ln -sfn "${CONFIG_DIR}/hammerspoon" ~/.hammerspoon
 ln -sfn "${CONFIG_DIR}/nvim" ~/.config/nvim
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
-ln -sfn "${CONFIG_DIR}/cursor/settings.json" ~/Library/Application\ Support/Cursor/User/settings.json
-ln -sfn "${CONFIG_DIR}/ghostty/config" ~/.config/ghostty/config
+ln -sfn "${CONFIG_DIR}/claude/settings.json" ~/.claude/settings.json
 
 # Create or update ~/.zshrc that sources the shared config
 SOURCE_LINE="source \"${CONFIG_DIR}/zsh/zshrc\""
