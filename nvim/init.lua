@@ -235,7 +235,6 @@ vim.api.nvim_create_autocmd("User", {
 	end,
 })
 
-
 -- Treesitter
 setup("nvim-treesitter.configs", {
 	auto_install = true,
@@ -336,10 +335,6 @@ if snacks then
 	vim.keymap.set("n", "<leader>sp", picker.pickers, { desc = "Search pickers" })
 	vim.keymap.set("n", "<leader>/", picker.lines, { desc = "Search in buffer" })
 	vim.keymap.set("n", "<leader>s/", picker.grep_buffers, { desc = "Search in open files" })
-	vim.keymap.set("n", "<leader>sc", function()
-		local filename = vim.fn.expand("%:t:r")
-		snacks.picker.grep({ search = "<" .. filename })
-	end, { desc = "Search component refs" })
 
 	vim.keymap.set("n", "<leader>bd", function()
 		snacks.bufdelete()
