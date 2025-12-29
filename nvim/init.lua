@@ -420,6 +420,11 @@ end, {})
 
 -- Gitsigns
 setup("gitsigns", { current_line_blame = true })
+vim.api.nvim_create_autocmd("FocusGained", {
+	callback = function()
+		require("gitsigns").refresh()
+	end,
+})
 
 -- Trouble
 local trouble = setup("trouble", {
