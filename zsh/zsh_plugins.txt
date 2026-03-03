@@ -15,3 +15,4 @@ Aloxaf/fzf-tab
 
 # local stuff
 ~/config/zsh/zsh_plugins/kubectl-autocomplete
+~/config/zsh/zsh_plugins/skusafe-worktree
