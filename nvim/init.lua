@@ -391,12 +391,12 @@ local conform = setup("conform", {
 	formatters_by_ft = {
 		lua = { "stylua" },
 		python = { "isort", "black", "ruff_fix" },
-		javascript = { "biome", "prettierd", "prettier", stop_after_first = true },
-		typescript = { "biome", "prettierd", "prettier", stop_after_first = true },
-		typescriptreact = { "biome", "prettierd", "prettier", stop_after_first = true },
-		json = { "biome", "prettierd", "prettier", stop_after_first = true },
+		javascript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+		typescript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+		typescriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+		json = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
 		yaml = { "prettierd", "prettier", stop_after_first = true },
-		svelte = { "prettierd", "prettier", stop_after_first = true },
+		svelte = { "oxfmt", "prettierd", "prettier", stop_after_first = true },
 		sql = { "pg_format" },
 	},
 })
