@@ -49,6 +49,9 @@ end)
 -- =============================================================================
 vim.keymap.set("i", "ii", "<Esc>", { desc = "Exit insert mode" })
 
+-- Search & replace
+vim.keymap.set("n", "<leader>S", '<cmd>lua require("spectre").toggle()<CR>', { desc = "Toggle Spectre" })
+
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus left" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus right" })
@@ -143,6 +146,9 @@ vim.pack.add({
 
 	-- Git
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+
+	-- Search & Replace
+	{ src = "https://github.com/nvim-pack/nvim-spectre" },
 
 	-- Utilities
 	{ src = "https://github.com/folke/trouble.nvim" },
