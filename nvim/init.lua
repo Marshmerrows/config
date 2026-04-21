@@ -402,7 +402,7 @@ local conform = setup("conform", {
 		typescriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
 		json = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
 		yaml = { "prettierd", "prettier", stop_after_first = true },
-		svelte = { "oxfmt", "prettierd", "prettier", stop_after_first = true },
+		svelte = { "prettierd", "prettier", stop_after_first = true },
 		sql = { "pg_format" },
 	},
 })
@@ -410,6 +410,17 @@ if conform then
 	vim.keymap.set({ "n", "v" }, "<leader>f", function()
 		conform.format({ async = true, lsp_format = "fallback" })
 	end, { desc = "Format buffer" })
+
+	-- Biome organize imports on save
+	vim.api.nvim_create_autocmd("BufWritePre", {
+		pattern = { "*.ts", "*.js", "*.svelte", "*.tsx", "*.jsx" },
+		callback = function()
+			vim.lsp.buf.code_action({
+				context = { only = { "source.organizeImports.biome" } },
+				apply = true,
+			})
+		end,
+	})
 end
 
 vim.api.nvim_create_user_command("JsonFormat", function()
