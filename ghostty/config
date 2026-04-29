@@ -1,0 +1,51 @@
+# Font
+font-family = VictorMono Nerd Font Mono
+font-size = 12
+font-thicken = true
+
+# Colors (ported from iTerm2)
+background = #000000
+foreground = #bbbbbb
+cursor-color = #ffa560
+selection-background = #363983
+selection-foreground = #ffffff
+
+# Transparency + blur (matches iTerm2: Transparency 0.20, Blur 35)
+background-opacity = 0.80
+background-blur = 20
+
+# Window
+window-padding-x = 8
+window-padding-y = 8
+window-save-state = always
+macos-titlebar-style = tabs
+macos-option-as-alt = false
+
+# Cursor
+cursor-style = block
+cursor-style-blink = false
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+# Scrollback (iTerm2 had unlimited; 100k is sane)
+scrollback-limit = 100000
+
+# Quality of life
+mouse-hide-while-typing = true
+copy-on-select = true
+confirm-close-surface = false
+quit-after-last-window-closed = true
+
+# Splits
+split-divider-color = gray
+unfocused-split-fill = white
+
+# Global hotkey: Option+Space toggles the quick-terminal overlay
+keybind = global:option+space=toggle_quick_terminal
+quick-terminal-position = bottom
+quick-terminal-autohide = false
+
+# Theme presets — uncomment one to override the manual colors above
+# theme = catppuccin-mocha
+# theme = tokyonight
+# theme = GruvboxDark

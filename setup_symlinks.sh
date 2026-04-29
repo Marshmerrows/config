@@ -4,6 +4,7 @@ CONFIG_DIR="$(pwd)"
 
 ln -sfn "${CONFIG_DIR}/hammerspoon" ~/.hammerspoon
 ln -sfn "${CONFIG_DIR}/nvim" ~/.config/nvim
+ln -sfn "${CONFIG_DIR}/ghostty" ~/.config/ghostty
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
 ln -sfn "${CONFIG_DIR}/claude/settings.json" ~/.claude/settings.json
 
@@ -25,4 +26,4 @@ else
 fi
 
 echo "Symlinks created successfully:"
-ls -l ~/.hammerspoon ~/.config/nvim ~/.zshrc ~/.zsh_plugins.txt
+ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt
