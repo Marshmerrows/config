@@ -17,7 +17,7 @@ macos-option-as-alt = false
 cursor-style = block
 cursor-style-blink = false
 shell-integration = zsh
-shell-integration-features = cursor,sudo,title
+shell-integration-features = no-cursor,sudo,ssh-env
 
 # Scrollback (iTerm2 had unlimited; 100k is sane)
 scrollback-limit = 100000
