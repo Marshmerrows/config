@@ -3,16 +3,8 @@ font-family = VictorMono Nerd Font Mono
 font-size = 12
 font-thicken = true
 
-# Colors (ported from iTerm2)
-background = #000000
-foreground = #bbbbbb
-cursor-color = #ffa560
-selection-background = #363983
-selection-foreground = #ffffff
-
-# Transparency + blur (matches iTerm2: Transparency 0.20, Blur 35)
-background-opacity = 0.80
-background-blur = 20
+# Theme — matches nvim (kanagawa-dragon)
+theme = Kanagawa Dragon
 
 # Window
 window-padding-x = 8
@@ -44,8 +36,3 @@ unfocused-split-fill = white
 keybind = global:option+space=toggle_quick_terminal
 quick-terminal-position = bottom
 quick-terminal-autohide = false
-
-# Theme presets — uncomment one to override the manual colors above
-# theme = catppuccin-mocha
-# theme = tokyonight
-# theme = GruvboxDark
