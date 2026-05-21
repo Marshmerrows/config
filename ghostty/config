@@ -19,8 +19,8 @@ cursor-style-blink = false
 shell-integration = zsh
 shell-integration-features = no-cursor,sudo,ssh-env
 
-# Scrollback (iTerm2 had unlimited; 100k is sane)
-scrollback-limit = 100000
+# Scrollback (measured in bytes; 4294967295 is ~4.3 GB, effectively unlimited)
+scrollback-limit = 4294967295
 
 # Quality of life
 mouse-hide-while-typing = true
