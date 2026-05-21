@@ -2,15 +2,42 @@
 -- from https://gist.github.com/kizzx2/e542fa74b80b7563045a
 -- Command-Ctrl-move: move window under mouse
 -- Command-Control-Shift-move: resize window under mouse
+-- Helper to determine if a window is draggable/resizable.
+-- Standard windows are always included. We also explicitly allow Arc Browser
+-- mini windows (Little Arc) which often fail the standard window check.
+local function is_draggable_window(w)
+	if not w then return false end
+	if w:isFullScreen() then return false end
+
+	if w:isStandard() then
+		return true
+	end
+
+	-- Globally allow floating windows, provided they are actual window objects
+	if w:role() == "AXWindow" and w:subrole() == "AXFloatingWindow" then
+		return true
+	end
+
+	-- Arc's Mini/Little Arc windows report as AXWindow with subrole AXSystemDialog
+	local app = w:application()
+	if app and app:name() == "Arc" then
+		if w:role() == "AXWindow" and w:subrole() == "AXSystemDialog" then
+			return true
+		end
+	end
+
+	return false
+end
+
 function get_window_under_mouse()
 	local my_pos = hs.geometry.new(hs.mouse.absolutePosition())
 	local my_screen = hs.mouse.getCurrentScreen()
 	return hs.fnutils.find(hs.window.orderedWindows(), function(w)
-		return my_screen == w:screen() and w:isStandard() and (not w:isFullScreen()) and my_pos:inside(w:frame())
+		return my_screen == w:screen() and is_draggable_window(w) and my_pos:inside(w:frame())
 	end)
 end
 
-dragging = {} -- global variable to hold the dragging/resizing state
+dragging = nil -- global variable to hold the dragging/resizing state
 
 drag_event = hs.eventtap.new({ hs.eventtap.event.types.mouseMoved }, function(e)
 	if not dragging then
