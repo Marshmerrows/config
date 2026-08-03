@@ -8,6 +8,11 @@ ln -sfn "${CONFIG_DIR}/ghostty" ~/.config/ghostty
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
 ln -sfn "${CONFIG_DIR}/claude/settings.json" ~/.claude/settings.json
 
+# Shared global agent instructions (one file, both tools)
+mkdir -p ~/.claude ~/.codex
+ln -sfn "${CONFIG_DIR}/ai/AGENTS.md" ~/.claude/CLAUDE.md
+ln -sfn "${CONFIG_DIR}/ai/AGENTS.md" ~/.codex/AGENTS.md
+
 # Create or update ~/.zshrc that sources the shared config
 SOURCE_LINE="source \"${CONFIG_DIR}/zsh/zshrc\""
 if [ ! -f ~/.zshrc ]; then
@@ -26,4 +31,5 @@ else
 fi
 
 echo "Symlinks created successfully:"
-ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt
+ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt \
+    ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.codex/AGENTS.md
