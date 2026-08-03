@@ -17,6 +17,21 @@ Applies to every project. Repo-level `AGENTS.md` / `CLAUDE.md` wins on conflict.
 - Say "I don't know" instead of assembling a plausible answer.
 - Don't re-audit statements that were already correct. Correct a real error in one sentence, then continue.
 
+## Direction
+
+- Simplify aggressively. Prefer the least complex solution that fully solves the underlying problem.
+  Remove or reuse before adding.
+- Think broadly before changing narrowly. Understand the root cause, surrounding system, and relevant
+  consequences; then make the smallest coherent change.
+- Do not confuse the smallest diff with the simplest solution. Avoid symptom patches, local workarounds,
+  and fixes that preserve a broken abstraction.
+- Stay anchored to my request and suggested direction. If evidence points toward a materially different
+  approach or scope, stop and explain the mismatch concisely before proceeding.
+- Communicate divergence, uncertainty, and important discoveries immediately. Do not bury them in
+  progress narration or wait until after implementation.
+- Helpful work that goes in the wrong direction is not helpful. Do not expand the task merely because
+  adjacent improvements are available.
+
 ## Scope
 
 - Fix what I asked about. Adjacent bugs get reported, not fixed.
