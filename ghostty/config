@@ -33,9 +33,7 @@ clipboard-paste-protection = false
 split-divider-color = gray
 unfocused-split-fill = white
 
-# Quick-terminal toggle. Hammerspoon binds option+space, activates Ghostty
-# (so the menu bar swaps and on close focus falls back to another Ghostty
-# window), then forwards this hyper-key combo here.
-keybind = global:cmd+shift+ctrl+alt+f18=toggle_quick_terminal
+# Quick terminal
+keybind = global:option+space=toggle_quick_terminal
 quick-terminal-position = bottom
-quick-terminal-autohide = false
+quick-terminal-autohide = true
