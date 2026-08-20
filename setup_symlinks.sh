@@ -30,6 +30,7 @@ link_pi_resources "${CONFIG_DIR}/pi/skills" ~/.pi/agent/skills
 link_pi_resources "${CONFIG_DIR}/pi/prompts" ~/.pi/agent/prompts
 link_pi_resources "${CONFIG_DIR}/pi/themes" ~/.pi/agent/themes
 ln -sfn "${CONFIG_DIR}/pi/mcp.json" ~/.pi/agent/mcp.json
+ln -sfn "${CONFIG_DIR}/pi/keybindings.json" ~/.pi/agent/keybindings.json
 
 # Shared global agent instructions (one file, both tools)
 mkdir -p ~/.claude ~/.codex
@@ -57,4 +58,5 @@ echo "Symlinks created successfully:"
 ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt \
     ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.codex/AGENTS.md \
     ~/.pi/agent/extensions/statusline.ts ~/.pi/agent/mcp.json \
+    ~/.pi/agent/keybindings.json \
     ~/.config/herdr/config.toml ~/dev/control
