@@ -7,8 +7,9 @@ ln -sfn "${CONFIG_DIR}/nvim" ~/.config/nvim
 ln -sfn "${CONFIG_DIR}/ghostty" ~/.config/ghostty
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
 ln -sfn "${CONFIG_DIR}/claude/settings.json" ~/.claude/settings.json
-mkdir -p ~/.config/herdr
+mkdir -p ~/.config/herdr ~/dev
 ln -sfn "${CONFIG_DIR}/herdr/config.toml" ~/.config/herdr/config.toml
+ln -sfn "${CONFIG_DIR}/herdr/control" ~/dev/control
 
 # Pi resources live in this repo and are linked into Pi's global config.
 link_pi_resources() {
@@ -56,4 +57,4 @@ echo "Symlinks created successfully:"
 ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt \
     ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.codex/AGENTS.md \
     ~/.pi/agent/extensions/statusline.ts ~/.pi/agent/mcp.json \
-    ~/.config/herdr/config.toml
+    ~/.config/herdr/config.toml ~/dev/control
