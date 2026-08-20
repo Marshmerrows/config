@@ -5,7 +5,8 @@
   ],
   "settings": {
     "hostConfigDiscovery": "off",
-    "directTools": false
+    "directTools": false,
+    "mcpFooterStatus": "compact"
   },
   "mcpServers": {
     "notion": {

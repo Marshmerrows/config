@@ -11,6 +11,8 @@ const WEATHER_URL = "https://wttr.in/?format=3";
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
 const WEATHER_TIMEOUT_MS = 5000;
 const GIT_TIMEOUT_MS = 3000;
+const ANSI_ESCAPE_PATTERN =
+  /\x1b(?:\][^\x07]*(?:\x07|\x1b\\)|\[[0-?]*[ -/]*[@-~])|\u009b[0-?]*[ -/]*[@-~]/g;
 
 type UsageTotals = {
   cost: number;
@@ -50,9 +52,26 @@ function formatCwd(cwd: string): string {
 
 function sanitizeSingleLine(text: string): string {
   return text
+    .replace(ANSI_ESCAPE_PATTERN, "")
     .replace(/[\u0000-\u001f\u007f]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function formatMcpFooterStatus(
+  theme: Theme,
+  status: string | undefined,
+): string | undefined {
+  if (!status) return undefined;
+
+  const clean = sanitizeSingleLine(status);
+  const ratio = clean.match(/\bMCP\s+(\d+)\/(\d+)\b/i);
+  if (ratio) return theme.fg("accent", `🔌 ${ratio[1]}/${ratio[2]}`);
+
+  const detail = clean
+    .replace(/^🔌\s*/, "")
+    .replace(/^MCP:?\s*/i, "");
+  return detail ? theme.fg("dim", `🔌 ${detail}`) : undefined;
 }
 
 function usageTotalTokens(usage: Usage): number {
@@ -365,11 +384,17 @@ export default function statusline(pi: ExtensionAPI): void {
               : undefined;
           const minimalPercent =
             contextPercent === null ? "?%" : `${Math.round(contextPercent)}%`;
+          const extensionStatuses = footerData.getExtensionStatuses();
+          const mcpStatus = formatMcpFooterStatus(
+            theme,
+            extensionStatuses.get("mcp"),
+          );
 
           const buildStats = (
             barLength: number,
             showWindow: boolean,
             showCost: boolean,
+            showMcp: boolean,
           ) => {
             const context = styleContext(
               theme,
@@ -378,14 +403,16 @@ export default function statusline(pi: ExtensionAPI): void {
             );
             const parts = [identity, context];
             if (showCost && cost) parts.push(cost);
+            if (showMcp && mcpStatus) parts.push(mcpStatus);
             return parts.join(" | ");
           };
 
           const statsLine = firstFittingLine(
             [
-              buildStats(20, true, true),
-              buildStats(10, true, true),
-              buildStats(10, true, false),
+              buildStats(20, true, true, true),
+              buildStats(10, true, true, true),
+              buildStats(10, true, true, false),
+              buildStats(10, true, false, false),
               `${identity} | ${minimalPercent}${cost ? ` | ${cost}` : ""}`,
               `${identity} | ${minimalPercent}`,
               `${minimalIdentity} | ${minimalPercent}`,
@@ -394,14 +421,14 @@ export default function statusline(pi: ExtensionAPI): void {
           );
 
           const lines = [projectLine, statsLine];
-          const extensionStatuses = footerData.getExtensionStatuses();
-          if (extensionStatuses.size > 0) {
-            const status = Array.from(extensionStatuses.entries())
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([, text]) => sanitizeSingleLine(text))
-              .filter(Boolean)
-              .join(" ");
-            if (status) lines.push(truncateToWidth(status, safeWidth, "..."));
+          const genericStatus = Array.from(extensionStatuses.entries())
+            .filter(([name]) => name !== "mcp")
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([, text]) => sanitizeSingleLine(text))
+            .filter(Boolean)
+            .join(" ");
+          if (genericStatus) {
+            lines.push(truncateToWidth(genericStatus, safeWidth, "..."));
           }
 
           return lines;
