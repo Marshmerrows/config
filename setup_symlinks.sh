@@ -8,6 +8,25 @@ ln -sfn "${CONFIG_DIR}/ghostty" ~/.config/ghostty
 ln -sfn "${CONFIG_DIR}/zsh/zsh_plugins.txt" ~/.zsh_plugins.txt
 ln -sfn "${CONFIG_DIR}/claude/settings.json" ~/.claude/settings.json
 
+# Pi resources live in this repo and are linked into Pi's global config.
+link_pi_resources() {
+    local source_dir="$1"
+    local target_dir="$2"
+
+    [ -d "$source_dir" ] || return
+    mkdir -p "$target_dir"
+
+    for resource in "$source_dir"/*; do
+        [ -e "$resource" ] || continue
+        ln -sfn "$resource" "$target_dir/$(basename "$resource")"
+    done
+}
+
+link_pi_resources "${CONFIG_DIR}/pi/extensions" ~/.pi/agent/extensions
+link_pi_resources "${CONFIG_DIR}/pi/skills" ~/.pi/agent/skills
+link_pi_resources "${CONFIG_DIR}/pi/prompts" ~/.pi/agent/prompts
+link_pi_resources "${CONFIG_DIR}/pi/themes" ~/.pi/agent/themes
+
 # Shared global agent instructions (one file, both tools)
 mkdir -p ~/.claude ~/.codex
 ln -sfn "${CONFIG_DIR}/ai/AGENTS.md" ~/.claude/CLAUDE.md
@@ -32,4 +51,5 @@ fi
 
 echo "Symlinks created successfully:"
 ls -l ~/.hammerspoon ~/.config/nvim ~/.config/ghostty ~/.zshrc ~/.zsh_plugins.txt \
-    ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.codex/AGENTS.md
+    ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.codex/AGENTS.md \
+    ~/.pi/agent/extensions/statusline.ts
