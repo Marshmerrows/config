@@ -1,0 +1,23 @@
+{
+  "imports": [
+    "claude-code",
+    "codex"
+  ],
+  "settings": {
+    "hostConfigDiscovery": "off",
+    "directTools": false
+  },
+  "mcpServers": {
+    "notion": {
+      "auth": "oauth",
+      "protocolVersion": "auto"
+    },
+    "posthog": {
+      "auth": "oauth",
+      "protocolVersion": "auto"
+    },
+    "openaiDeveloperDocs": {
+      "protocolVersion": "auto"
+    }
+  }
+}
